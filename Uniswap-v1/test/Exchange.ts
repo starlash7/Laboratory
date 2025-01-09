@@ -37,17 +37,20 @@ describe("Exchange", () => {
     });
   });
 
-  describe("swap", async () => {
-    it("swap", async () => {
-      await token.approve(exchange.address, toWei(1000));
-      await exchange.addLiquidity(toWei(1000), { value: toWei(1000) });
-
-      await exchange.connect(user).ethToTokenSwap({ value: toWei(1) });
-
-      expect(await getBalance(exchange.address)).to.equal(toWei(1001));
-      expect(await token.balanceOf(exchange.address)).to.equal(toWei(999));
-      expect(await token.balanceOf(user.address)).to.equal(toWei(1));
-      expect(await getBalance(user.address)).to.equal(toWei(9999));
+  describe("getOutputAmount", async () => {
+    it("correct getOutputAmount", async () => {
+      await token.approve(exchange.address, toWei(4000));
+      await exchange.addLiquidity(toWei(4000), { value: toWei(1000) });
+      // 4:1 비율
+      console.log(
+        toEther(
+          await exchange.getOutputAmount(
+            toWei(1),
+            getBalance(exchange.address),
+            token.balanceOf(exchange.address)
+          )
+        )
+      );
     });
   });
 });

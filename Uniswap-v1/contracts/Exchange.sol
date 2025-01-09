@@ -23,5 +23,11 @@ contract Exchange {
 
         token.transfer(msg.sender, outputAmount);
     }
+
+    function getOutputAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) public pure returns(uint256) {
+        uint256 numerator = outputReserve * inputAmount;
+        uint256 denominator = inputReserve + inputAmount;
+        return numerator / denominator;
+    }
 }
 

@@ -15,14 +15,32 @@ contract Exchange {
         token.transferFrom(msg.sender, address(this), _tokenAmount);
     }
 
-
-    function ethToTokenSwap() public payable {
-        uint256 inputAmount = msg.value;
+    //ETH -> ERC20
+    function ethToTokenSwap(uint256 _minTokens) public payable {
         
-        uint256 outputAmount = inputAmount;
+        uint256 outputAmount = getOutputAmount(msg.value, address(this).balance - msg.value , token.balanceOf(address(this)));
 
-        token.transfer(msg.sender, outputAmount);
+        require(outputAmount >= _minTokens, "Ineffucient outputamount");
+        IERC20(token).transfer(msg.sender, outputAmount);
     }
+
+    //ERC20 -> ETH
+      function tokenToEthSwap(uint256 _tokenSold, uint256 _minEth) public payable {
+        
+        uint256 outputAmount = getOutputAmount(_tokenSold, token.balanceOf(address(this)), address(this).balance);
+
+        require(outputAmount >= _minEth, "Ineffucient outputamount");
+        IERC20(token).transferFrom(msg.sender,address(this), _tokenSold);
+        payable(msg.sender).transfer(outputAmount);
+    }
+
+    
+    function getPrice(uint256 inputReserve, uint256 outputReserve) public pure returns(uint256) {
+        uint256 numerator = inputReserve;
+        uint256 denominator = outputReserve;
+        return numerator / denominator;
+    }
+
 
     function getOutputAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) public pure returns(uint256) {
         uint256 numerator = outputReserve * inputAmount;

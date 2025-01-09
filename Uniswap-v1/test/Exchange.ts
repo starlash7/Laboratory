@@ -53,4 +53,20 @@ describe("Exchange", () => {
       );
     });
   });
+
+  describe("ethToTokenSwap", async () => {
+    it("correct ethToTokenSwap", async () => {
+      await token.approve(exchange.address, toWei(4000));
+
+      // GRAY:ETH 4:1
+      await exchange.addLiquidity(toWei(4000), { value: toWei(1000) });
+
+      // 1ETH: ?? GRAY
+      await exchange
+        .connect(user)
+        .ethToTokenSwap(toWei(3.99), { value: toWei(1) });
+
+      console.log(toEther(await token.balanceOf(user.address)));
+    });
+  });
 });

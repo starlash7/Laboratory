@@ -8,20 +8,29 @@
   ></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
   <script>
-    const root = document.getElementById("root");
-
     function App() {
-      const [counter, setCounter] = React.useState(0);
-      const onClick = () => {
-        setCounter(counter + 1);
+      const [minutes, setMinutes] = React.useState();
+      const onChange = (event) => {
+        setMinutes(event.target.value);
       };
       return (
         <div>
-          <h3>Total clicks: {counter}</h3>
-          <button onClick={onClick}>CLick me</button>
+          <h1 className="hi">Super Converter</h1>
+          <label for="minutes">Minutes</label>
+          <input
+            value={minutes}
+            id="minutes"
+            placeholder="Minutes"
+            type="number"
+            onChange={onChange}
+          />
+          <label for="hours">Hours</label>
+          <input id="hours" placeholder="Hours" type="number" />
         </div>
       );
     }
+
+    const root = document.getElementById("root");
     ReactDOM.render(<App />, root);
   </script>
 </html>

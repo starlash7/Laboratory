@@ -20,7 +20,7 @@ function addLiquidity(uint256 _maxTokens) public payable {
         token.transferFrom(msg.sender, address(this), tokenAmount);
         uint256 liquidityMinted = totalLiquidity * msg.value / ethReserve;
         _mint(msg.sender, liquidityMinted);
-
+        
     } else{ 
 
         uint256 tokenAmount = _maxTokens;

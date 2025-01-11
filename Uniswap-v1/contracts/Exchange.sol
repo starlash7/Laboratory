@@ -19,7 +19,7 @@ contract Exchange {
     //ETH -> ERC20
     function ethToTokenSwap(uint256 _minTokens) public payable {
         
-        uint256 outputAmount = getOutputAmount(msg.value, address(this).balance - msg.value , token.balanceOf(address(this)));
+        uint256 outputAmount = getOutputAmountWithFee(msg.value, address(this).balance - msg.value , token.balanceOf(address(this)));
 
         require(outputAmount >= _minTokens, "Ineffucient outputamount");
         IERC20(token).transfer(msg.sender, outputAmount);
@@ -28,7 +28,7 @@ contract Exchange {
     //ERC20 -> ETH
       function tokenToEthSwap(uint256 _tokenSold, uint256 _minEth) public payable {
         
-        uint256 outputAmount = getOutputAmount(_tokenSold, token.balanceOf(address(this)), address(this).balance);
+        uint256 outputAmount = getOutputAmountWithFee(_tokenSold, token.balanceOf(address(this)), address(this).balance);
 
         require(outputAmount >= _minEth, "Ineffucient outputamount");
         IERC20(token).transferFrom(msg.sender,address(this), _tokenSold);
@@ -46,6 +46,13 @@ contract Exchange {
     function getOutputAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) public pure returns(uint256) {
         uint256 numerator = outputReserve * inputAmount;
         uint256 denominator = inputReserve + inputAmount;
+        return numerator / denominator;
+    }
+
+    function getOutputAmountWithFee(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) public pure returns(uint256) {
+        uint256 inputAmountWithFee = inputAmount * 99;
+        uint256 numerator = outputReserve * inputAmountWithFee;
+        uint256 denominator = inputReserve + inputAmountWithFee;
         return numerator / denominator;
     }
 }

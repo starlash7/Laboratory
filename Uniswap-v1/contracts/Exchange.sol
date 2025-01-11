@@ -2,14 +2,17 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./interfaces/IFactory.sol";
 
 
 contract Exchange {
 
     IERC20 token;
+    IFactory factory;
 
     constructor(address _token) {
         token = IERC20(_token);
+        factory = IFactory(msg.sender);
     }
 
     function addLiquidity(uint256 _tokenAmount) public payable {

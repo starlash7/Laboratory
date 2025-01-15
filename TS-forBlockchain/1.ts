@@ -1,21 +1,22 @@
-type Player<E> = {
-  name: string;
-  extraInfo: E;
-};
+abstract class User {
+  constructor(
+    protected firstName: string,
+    protected lastName: string,
+    protected nickname: string
+  ) {}
+  abstract getNickName(): void;
 
-type NicoExtra = {
-  favFood: string;
-};
-type NicoPlayer = Player<NicoExtra>;
+  getFullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
 
-const nico: Player<{ favFood: string }> = {
-  name: "nico",
-  extraInfo: {
-    favFood: "kimchi",
-  },
-};
+class Player extends User {
+  getNickName() {
+    console.log(this.nickname);
+  }
+}
 
-const lynn: Player<null> = {
-  name: "lynn",
-  extraInfo: null,
-};
+const nico = new Player("nico", "las", "니코");
+
+nico.getFullName();

@@ -1,10 +1,21 @@
-type SuperPrint = {
-  <T>(arr: T[]): T;
+type Player<E> = {
+  name: string;
+  extraInfo: E;
 };
 
-const superPrint: SuperPrint = (arr) => arr[0];
+type NicoExtra = {
+  favFood: string;
+};
+type NicoPlayer = Player<NicoExtra>;
 
-superPrint([1, 2, 3, 4]);
-superPrint([true, false, true]);
-superPrint(["a", "b"]);
-superPrint([1, 2, true, false]);
+const nico: Player<{ favFood: string }> = {
+  name: "nico",
+  extraInfo: {
+    favFood: "kimchi",
+  },
+};
+
+const lynn: Player<null> = {
+  name: "lynn",
+  extraInfo: null,
+};

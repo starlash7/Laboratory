@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components"
+import { auth, db } from "../firbase";
+import { addDoc, collection } from "firebase/firestore";
 
 const Form = styled.form`
     display: flex;
@@ -62,18 +64,42 @@ const SubmitBtn = styled.input`
 export default function PostTweetForm() {
     const [isLoading, setLoading] = useState(false);
     const [tweet, setTweet] = useState("");
-    const [file, setFile] = useState<File | null>(null);
+    const [file, setFile] = useState<string | null>(null);
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setTweet(e.target.value);
     }
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { files } = e.target;
-        if (files && FileSystem.length === 1) {
-            setFile(files[0]);
+        if (files && files.length === 1) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFile(reader.result as string);
+            };
+            reader.readAsDataURL(files[0]);
         }
     }
 
-    return <Form>
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const user = auth.currentUser
+        if (!user || isLoading || tweet === "" || tweet.length > 180) return;
+
+        try {
+            setLoading(true);
+            await addDoc(collection(db, "tweets"), {
+                tweet,
+                createdAt: Date.now(),
+                username: user.displayName || "Anonymous",
+                userId: user.uid,
+            })
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return <Form onSubmit={onSubmit}>
         <TextArea
             rows={5}
             maxLength={180}

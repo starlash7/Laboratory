@@ -18,7 +18,7 @@ export interface ITweet {
     tweet: string;
     userId: string;
     username: string;
-    createdAt: number;
+    createAt: number;
 }
 
 const Wrapper = styled.div`
@@ -63,7 +63,12 @@ export default function Timeline() {
                         id: doc.id,
                     };
                 });
-                setTweet(tweets);
+                setTweet(
+                    tweets.map((tweet) => ({
+                        ...tweet,
+                        createAt: tweet.createdAt,
+                    }))
+                );
             });
         };
         fetchTweets();

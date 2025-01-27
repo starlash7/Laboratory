@@ -98,7 +98,7 @@ export default function PostTweetForm() {
                     storage,
                     `tweets/${user.uid}/${doc.id}`
                 );
-                const result = await uploadBytes(locationRef, file);
+                const result = await uploadBytes(locationRef, new Blob([file]));
                 const url = getDownloadURL(result.ref);
                 await updateDoc(doc, {
                     photo: url
